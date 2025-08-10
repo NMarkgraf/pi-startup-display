@@ -19,7 +19,7 @@ def getIP4Address(prefix = "ip4: "):
   return prefix + s.getsockname()[0]
 
 
-def getIP6Address(prefix = "ip6: "):
+def getIP6Address(prefix = "ip6: ", hostname=""):
   try:
     addrinfo = socket.getaddrinfo(hostname, None, socket.AF_INET6)
     for addr in addrinfo:
