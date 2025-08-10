@@ -31,8 +31,8 @@ def getIP6Address(prefix = "ip6: "):
          except ValueError:
              pass  # Keine gültige IPv6-Adresse
       return prefix + "<none>" # Kein IPv6 gefunden
-    except socket.gaierror:
-      return prefix + "<NONE>"
+  except socket.gaierror:
+    return prefix + "<NONE>"
 
 def getDateTime(prefix = "Start: "):
   return prefix + str(datetime.now())
