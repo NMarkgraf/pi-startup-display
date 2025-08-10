@@ -12,8 +12,13 @@ from datetime import datetime
 import socket
 import epd2in13_V4
 
+# Google DNS
 dns_ip4 = "8.8.8.8"
+dns_ip6 = "2001:4860:4860::8888"
+
+# Cloudflare DNS
 #dns_ip4 = "1.1.1.2"
+#dns_ip6 = "2606:4700:4700::1111"
 
 
 def getIP4Address(prefix = "ip4: "):
@@ -21,21 +26,10 @@ def getIP4Address(prefix = "ip4: "):
   s.connect((dns_ip4, 1)) 
   return prefix + s.getsockname()[0]
 
-
-def getIP6Address(prefix = "ip6: ", hostname=""):
-  try:
-    addrinfo = socket.getaddrinfo(hostname, None, socket.AF_INET6)
-    for addr in addrinfo:
-      if addr[0] == socket.AF_INET6:
-         ip_address = addr[4][0]
-         try:
-            ipaddress.ip_address(ip_address) # Validiert IPv6
-            return prefix + str(ip_address)
-         except ValueError:
-             pass  # Keine gültige IPv6-Adresse
-      return prefix + "<none>" # Kein IPv6 gefunden
-  except socket.gaierror:
-    return prefix + "<NONE>"
+def getIP6Address(prefix = "ip6: "):
+  s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+  s.connect((dns_ip6, 1)) 
+  return prefix + s.getsockname()[0]
 
 def getDateTime(prefix = "Start: "):
   return prefix + str(datetime.now())
