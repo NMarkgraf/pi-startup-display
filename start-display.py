@@ -12,10 +12,13 @@ from datetime import datetime
 import socket
 import epd2in13_V4
 
+dns_ip4 = "8.8.8.8"
+#dns_ip4 = "1.1.1.2"
+
 
 def getIP4Address(prefix = "ip4: "):
   s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  s.connect(('8.8.8.8', 1)) 
+  s.connect((dns_ip4, 1)) 
   return prefix + s.getsockname()[0]
 
 
@@ -44,13 +47,14 @@ try:
 	font13 = ImageFont.truetype('Font.ttc', 13)
 	font15 = ImageFont.truetype('Font.ttc', 15)
 	font20 = ImageFont.truetype('Font.ttc', 20)
+	font25 = ImageFont.truetype('Font.ttc', 25)
 	
 	image = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame    
 	
 	draw = ImageDraw.Draw(image)
-	draw.text((75, 0), getDateTime(), font = font13, fill = 0)
-	draw.text((80,30), getIP6Address(), font = font15, fill = 0)
-	draw.text((110, 60), getIP4Address(), font = font20, fill = 0)
+	draw.text((0, 5), getDateTime(), font = font13, fill = 0)
+	draw.text((0,30), getIP6Address(), font = font20, fill = 0)
+	draw.text((0, 60), getIP4Address(), font = font25, fill = 0)
 
 	epd.display(epd.getbuffer(image))
 
