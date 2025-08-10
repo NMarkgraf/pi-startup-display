@@ -47,7 +47,7 @@ try:
 	
 	draw = ImageDraw.Draw(image)
 	draw.text((0, 5), getDateTime(), font = font13, fill = 0)
-	draw.text((0,30), getIP6Address(), font = font20, fill = 0)
+	draw.text((0,30), getIP6Address(), font = font15, fill = 0)
 	draw.text((0, 60), getIP4Address(), font = font25, fill = 0)
 
 	epd.display(epd.getbuffer(image))
