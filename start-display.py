@@ -38,6 +38,7 @@ try:
 	epd = epd2in13_V4.EPD()
 	epd.init()
 	epd.Clear(0xFF)
+	font10 = ImageFont.truetype('Font.ttc', 10)
 	font13 = ImageFont.truetype('Font.ttc', 13)
 	font15 = ImageFont.truetype('Font.ttc', 15)
 	font20 = ImageFont.truetype('Font.ttc', 20)
@@ -47,11 +48,13 @@ try:
 	
 	draw = ImageDraw.Draw(image)
 	draw.text((0,  3), getDateTime(), font = font15, fill = 0)
-	draw.text((0, 30), getIP6Address(), font = font13, fill = 0)
+	draw.text((0, 30), getIP6Address(), font = font10, fill = 0)
 	draw.text((0, 60), getIP4Address(), font = font25, fill = 0)
 
 	epd.display(epd.getbuffer(image))
 
+  time.sleep(10)
+  
 except IOError as e:
 	exit(0)
  
