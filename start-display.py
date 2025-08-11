@@ -58,5 +58,8 @@ except IOError as e:
 except KeyboardInterrupt:    
 	epd2in13_V4.epdconfig.module_exit(cleanup=True)
 	exit(0)
+	
+except:
+  exit(0)
 
 exit(0)
