@@ -53,12 +53,13 @@ try:
 	draw.text((0, 3), getDateTime(), font = font15, fill = 0)
 	(first, second) = getIP6Address()
 	draw.text((0, 30), "ip6: " + first, font = font15, fill = 0)
-	draw.text((0, 48), "     " + secoundfont = font15, fill = 0)
+	draw.text((0, 48), "     " + secound, font = font15, fill = 0)
 	draw.text((0, 68), getIP4Address(), font = font25, fill = 0)
 
 	epd.display(epd.getbuffer(image))
 
   time.sleep(10)
+  
   
 except IOError as e:
 	exit(0)
