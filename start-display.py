@@ -26,13 +26,16 @@ def getIP4Address(prefix = "ip4: "):
   s.connect((dns_ip4, 1)) 
   return prefix + s.getsockname()[0]
 
-def getIP6Address(prefix = "ip6: "):
+def getIP6Address(prefix = ""):
   s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
   s.connect((dns_ip6, 1)) 
-  return prefix + s.getsockname()[0]
+  ip6 =s.getsockname()[0].slpit(":")
+  first = ":".join(ip6[0:4])+":"
+  second = ":".join(ip[4:8])
+  return (prefix + first, second)
 
 def getDateTime(prefix = "Start: "):
-  return prefix + str(datetime.now())
+  return prefix + str(datetime.now()[:19])
 
 try:
 	epd = epd2in13_V4.EPD()
@@ -47,9 +50,11 @@ try:
 	image = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame    
 	
 	draw = ImageDraw.Draw(image)
-	draw.text((0,  3), getDateTime(), font = font15, fill = 0)
-	draw.text((0, 30), getIP6Address(), font = font10, fill = 0)
-	draw.text((0, 60), getIP4Address(), font = font25, fill = 0)
+	draw.text((0, 3), getDateTime(), font = font15, fill = 0)
+	(first, second) = getIP6Address()
+	draw.text((0, 30), "ip6: " + first, font = font15, fill = 0)
+	draw.text((0, 48), "     " + secoundfont = font15, fill = 0)
+	draw.text((0, 68), getIP4Address(), font = font25, fill = 0)
 
 	epd.display(epd.getbuffer(image))
 
