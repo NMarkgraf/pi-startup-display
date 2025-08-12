@@ -57,15 +57,14 @@ try:
 
 	(first, second) = getIP6Address()
 	
-	draw.text((0, 48), "ip6: " font = font25, fill = 0)
-	draw.text((20, 30), first, font = font15, fill = 0)
-	draw.text((20, 48), second, font = font15, fill = 0)
+	draw.text((0, 45), "ip6: " font = font25, fill = 0)
+	draw.text((40, 30), first, font = font15, fill = 0)
+	draw.text((40, 48), second, font = font15, fill = 0)
 
 	draw.text((0, 68), getIP4Address(), font = font25, fill = 0)
 
 	epd.display(epd.getbuffer(image))
-
-  sleep(10)
+	sleep(10)
   
   
 except IOError as e:
