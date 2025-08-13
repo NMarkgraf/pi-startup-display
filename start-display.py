@@ -3,7 +3,7 @@
   
   (C) by Norman Markgraf
       in 2025
-      
+  
   Release 1.0 (10. August 2025)
   Release 1.1 (12. August 2025)
   
