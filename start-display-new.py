@@ -65,12 +65,12 @@ def initImage(dsp):
 
 
 def initDraw(image):
-    return ImageDraw(image)
+    return ImageDraw.Draw(image)
 
 
-def drawText(draw, pos, text, size=18, fonds=None, fill=0):
+def drawText(draw, pos, text, font=None, fill=0):
     if fonds:
-        draw(pos, text, font=fonts[size], fill)
+        draw.text(pos, text, font=font, fill=fill)
 
 
 def pushImage(dsp, image):
@@ -85,9 +85,9 @@ if __name__ == '__main__':
         fonts = initFonts()
         draw = initDraw(image)
         
-        drawText(draw, (0,3), getDateTime(), 18, fonts)
+        drawText(draw, (0,3), getDateTime(), font[18])
         
-        drawText(draw, (20, 30 ), "Scanning ...", 25, fonts)
+        drawText(draw, (20, 30 ), "Scanning ...", fonts[25])
         
         pushImage(draw)
         
@@ -98,11 +98,11 @@ if __name__ == '__main__':
         
         (first, second) = getIP6Address()
         
-        drawText(draw, (0, 30), "ip6:", 25, fonts)
-        drawText(draw, (50, 28), first, 15, fonts)
-        drawText(draw, (50, 46), second, 15, fonts)
+        drawText(draw, (0, 30), "ip6:", fonts[25])
+        drawText(draw, (50, 28), first, fonts[15])
+        drawText(draw, (50, 46), second, fonts[15])
         
-        drawText(draw, (0,70), getIP4Address(), 25, fonts)
+        drawText(draw, (0,70), getIP4Address(), fonts[25])
         pushImage(dsp, image)
         
         sleep(100)
