@@ -14,6 +14,9 @@ from datetime import datetime
 from time import sleep
 import socket
 import epd2in13_V4
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Google DNS
 dns_ip4 = "8.8.8.8"
@@ -69,7 +72,7 @@ def initDraw(image):
 
 
 def drawText(draw, pos, text, font=None, fill=0):
-    if fonds:
+    if font:
         draw.text(pos, text, font=font, fill=fill)
 
 
@@ -78,18 +81,20 @@ def pushImage(dsp, image):
 
   
 if __name__ == '__main__':
-  
+    logging.basicConfig(filename='myapp.log', level=logging.INFO)
+    logger.info('Started')
+    
     try:
         display = initDisplay()
         image = initImage(display)
         fonts = initFonts()
         draw = initDraw(image)
         
-        drawText(draw, (0,3), getDateTime(), font[18])
+        drawText(draw, (0,3), getDateTime(), fonts[18])
         
         drawText(draw, (20, 30 ), "Scanning ...", fonts[25])
         
-        pushImage(draw)
+        pushImage(display, image)
         
         sleep(120)
         
@@ -103,14 +108,18 @@ if __name__ == '__main__':
         drawText(draw, (50, 46), second, fonts[15])
         
         drawText(draw, (0,70), getIP4Address(), fonts[25])
-        pushImage(dsp, image)
+        pushImage(display, image)
         
         sleep(100)
         
         
     except IOError as e:
+        logger.info('Finished with IOError')
         exit(0)
      
-    except KeyboardInterrupt:    
+    except KeyboardInterrupt: 
+        logger.info('Finished with KeyboardInterrupt')
         epd2in13_V4.epdconfig.module_exit(cleanup=True)
         exit(0)
+        
+    logger.info('Finished')
