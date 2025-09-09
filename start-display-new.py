@@ -26,9 +26,9 @@ dns_ip6 = ["2001:4860:4860::8888", "2606:4700:4700::1111"]
 
 def getIP4Address(prefix = "ip4: "):
   ip4 = None
-  for i in dns_ip4:
+  for dns_lookup in dns_ip4:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect((dns_ip4[i], 1))
+    s.connect((dns_lookup, 1))
     if not ip4:
       ip4 = s.getsockname()[0]
     s.close()
@@ -37,9 +37,9 @@ def getIP4Address(prefix = "ip4: "):
 
 def getIP6Address(prefix = ""):
   ip6 = None
-  for i in dns_ip6:
+  for dns_lookup in dns_ip6:
     s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-    s.connect((dns_ip6[i], 1))
+    s.connect((dns_lookup, 1))
     if not ip6:
       ip6 =s.getsockname()[0].split(":")
     s.close()
