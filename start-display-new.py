@@ -104,7 +104,7 @@ if __name__ == '__main__':
     
     sleep(30)
 
-    while true:
+    while True:
       image = initImage(display)
       draw = initDraw(image)
       
