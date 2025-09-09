@@ -99,7 +99,7 @@ if __name__ == '__main__':
         
         drawText(draw, (0, 30), "ip6:", 25, fonts)
         drawText(draw, (50, 28), first, 15, fonts)
-        drawText(draw, (50, 46), "second, 15, fonts)
+        drawText(draw, (50, 46), second, 15, fonts)
         
         drawText(draw, (0,70), getIP4Address(), 25, fonts)
         pushImage(dsp, image)
