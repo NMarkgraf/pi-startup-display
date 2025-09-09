@@ -68,8 +68,9 @@ def initDraw(image):
     return ImageDraw(image)
 
 
-def drawText(draw, pos, text, size=18, fonds, fill=0):
-    draw(pos, text, font=fonts[size], fill)
+def drawText(draw, pos, text, size=18, fonds=None, fill=0):
+    if fonds:
+        draw(pos, text, font=fonts[size], fill)
 
 
 def pushImage(dsp, image):
