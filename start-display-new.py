@@ -102,7 +102,7 @@ if __name__ == '__main__':
     
     pushImage(display, image)
     
-    sleep(120)
+    sleep(30)
     
     image = initImage(display)
     draw = initDraw(image)
