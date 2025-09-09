@@ -81,8 +81,8 @@ def pushImage(dsp, image):
 
   
 if __name__ == '__main__':
-    logging.basicConfig(filename='myapp.log', level=logging.INFO)
-    logger.info('Started')
+    logging.basicConfig(filename='start-display.log', level=logging.INFO)
+    logger.info('Started at:'+getDateTime())
     
     try:
         display = initDisplay()
@@ -91,23 +91,28 @@ if __name__ == '__main__':
         draw = initDraw(image)
         
         drawText(draw, (0,3), getDateTime(), fonts[18])
-        
+
+        logger.info('Scanning ...')
         drawText(draw, (20, 30 ), "Scanning ...", fonts[25])
         
         pushImage(display, image)
         
         sleep(120)
         
-        image = initDisplay(display)
+        image = initImaged(isplay)
         draw = initDraw(image)
         
         (first, second) = getIP6Address()
+        logger.info("ip6:"+ first + second)
         
         drawText(draw, (0, 30), "ip6:", fonts[25])
         drawText(draw, (50, 28), first, fonts[15])
         drawText(draw, (50, 46), second, fonts[15])
         
-        drawText(draw, (0,70), getIP4Address(), fonts[25])
+        ip4 = getIP4Address()
+        drawText(draw, (0,70), ip4, fonts[25])
+        logger.info("ip4:" + ip4)
+        
         pushImage(display, image)
         
         sleep(100)
