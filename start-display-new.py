@@ -6,7 +6,7 @@
       
   Release 1.0 (10. August 2025)
   Release 1.1 (12. August 2025)
-  
+  Release 1.2 ( 9. September 2025)
 """
 
 from PIL import Image, ImageDraw, ImageFont
@@ -65,7 +65,7 @@ def initImage(dsp):
 
 
 def initDraw(image):
-  return ImageDraew(image)
+  return ImageDraw(image)
 
 
 def drawText(draw, pos, text, size=18, fonds, fill=0):
@@ -86,6 +86,15 @@ if __name__ == '__main__':
     
     drawText(draw, (0,3), getDateTime(), 18, fonts)
 
+    drawText(draw, (20, 30 ), "Scanning ...", 25, fonts)
+    
+    pushImage(draw)
+    
+    sleep(120)
+    
+    image = initDisplay(display)
+    draw = initDraw(image)
+    
   	(first, second) = getIP6Address()
   	
   	drawText(draw, (0, 30), "ip6:", 25, fonts)
@@ -95,7 +104,7 @@ if __name__ == '__main__':
     drawText(draw, (0,70), getIP4Address(), 25, fonts)
     pushImage(dsp, image)
     
-  	sleep(10)
+  	sleep(100)
     
     
   except IOError as e:
