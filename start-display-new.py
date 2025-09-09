@@ -103,26 +103,27 @@ if __name__ == '__main__':
     pushImage(display, image)
     
     sleep(30)
-    
-    image = initImage(display)
-    draw = initDraw(image)
-    
-    drawText(draw, (0,3), getDateTime(), fonts[18])
-    
-    (first, second) = getIP6Address()
-    logger.info("ip6: "+ first + second)
-    
-    drawText(draw, (0, 30), "ip6:", fonts[25])
-    drawText(draw, (50, 28), first, fonts[15])
-    drawText(draw, (50, 46), second, fonts[15])
-    
-    ip4 = getIP4Address()
-    drawText(draw, (0,70), ip4, fonts[25])
-    logger.info(ip4)
-    
-    pushImage(display, image)
-    
-    sleep(100)
+
+    while true:
+      image = initImage(display)
+      draw = initDraw(image)
+      
+      drawText(draw, (0,3), getDateTime(), fonts[18])
+      
+      (first, second) = getIP6Address()
+      logger.info("ip6: "+ first + second)
+      
+      drawText(draw, (0, 30), "ip6:", fonts[25])
+      drawText(draw, (50, 28), first, fonts[15])
+      drawText(draw, (50, 46), second, fonts[15])
+      
+      ip4 = getIP4Address()
+      drawText(draw, (0,70), ip4, fonts[25])
+      logger.info(ip4)
+      
+      pushImage(display, image)
+      
+      sleep(100)
     
   except IOError as e:
     logger.info('Finished with IOError')
