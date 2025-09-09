@@ -99,7 +99,7 @@ if __name__ == '__main__':
         
         sleep(120)
         
-        image = initImaged(isplay)
+        image = initImage(display)
         draw = initDraw(image)
         
         (first, second) = getIP6Address()
