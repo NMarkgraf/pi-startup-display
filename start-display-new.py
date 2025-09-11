@@ -120,7 +120,7 @@ if __name__ == '__main__':
       first = ":".join(ip6[0:4]) + ":"
       second = ":".join(ip6[4:8])
 
-      logger.info("ip6: "+ ip6)
+      logger.info("ip6: "+ first + second)
       
       drawText(draw, (0, 30), "ip6:", fonts[25])
       drawText(draw, (50, 28), first, fonts[15])
