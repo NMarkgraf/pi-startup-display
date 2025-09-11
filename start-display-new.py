@@ -49,34 +49,6 @@ def getAllIPAdresses():
   return (list(ip4_set), list(ip6_set), ip_list)
 
 
-def getIP4Address(prefix = "ip4: "):
-  (ip4, _, _) = getAllIPAdresses()
-  
-  for dns_lookup in dns_ip4:
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect((dns_lookup, 1))
-    if not ip4:
-      ip4 = s.getsockname()[0]
-    s.close()
-    
-  return prefix + ip4
-
-
-def getIP6Address(prefix = ""):
-  ip6 = None
-  for dns_lookup in dns_ip6:
-    s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-    s.connect((dns_lookup, 1))
-    if not ip6:
-      ip6 =s.getsockname()[0].split(":")
-    s.close()
-  if not ip6:
-      ip6 = "0000"+ 7 * ":0000"
-  first = ":".join(ip6[0:4]) + ":"
-  second = ":".join(ip6[4:8])
-  return (prefix + first, second)
-
-
 def getDateTime(prefix = "Start: "):
     return prefix + str(datetime.now())[:19]
 
@@ -144,7 +116,7 @@ if __name__ == '__main__':
       max = ip4_len * ip6_len
       
       ip4 = ip4_l[counter % ip4_len]
-      ip6 = ip6_l[counter % ip6_len]
+      ip6 = ip6_l[counter % ip6_len].split(":")
       first = ":".join(ip6[0:4]) + ":"
       second = ":".join(ip6[4:8])
 
@@ -154,7 +126,6 @@ if __name__ == '__main__':
       drawText(draw, (50, 28), first, fonts[15])
       drawText(draw, (50, 46), second, fonts[15])
       
-      # ip4 = getIP4Address()
       drawText(draw, (0,70), "ip4:"+ ip4, fonts[25])
       logger.info("ip4:"+ip4)
       
