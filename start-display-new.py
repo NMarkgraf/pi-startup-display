@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 from time import sleep
 import socket
+import netifaces as ni
 import epd2in13_V4
 import logging
 
@@ -24,14 +25,40 @@ dns_ip4 = ["8.8.8.8", "1.1.1.2"]
 dns_ip6 = ["2001:4860:4860::8888", "2606:4700:4700::1111"]
 
 
+def getAllIPAdresses():
+  interfaces = []
+  ip_list = []
+  ip4_set = set()
+  ip6_set = set()
+  import psutil
+  import socket
+  for interface in psutil.net_if_addrs():
+    if interface != "lo":
+      interfaces += interface,
+  for interface in interfaces:
+    interface_addrs = psutil.net_if_addrs().get(interface)
+    for snicaddr in interface_addrs:
+        if snicaddr.family in(socket.AF_INET, socket.AF_INET6):
+            if "%" not in snicaddr.address:
+              ip_list += snicaddr.address,
+    for ip in ip_list:
+      if ":" in ip:
+        ip6_set.add(ip)
+      if "." in ip:
+        ip4_set.add(ip)
+  return (list(ip4_set), list(ip6_set), ip_list)
+
+
 def getIP4Address(prefix = "ip4: "):
-  ip4 = None
+  (ip4, _, _) = getAllIPAdresses()
+  
   for dns_lookup in dns_ip4:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect((dns_lookup, 1))
     if not ip4:
       ip4 = s.getsockname()[0]
     s.close()
+    
   return prefix + ip4
 
 
@@ -88,6 +115,7 @@ def pushImage(dsp, image):
 if __name__ == '__main__':
   logging.basicConfig(filename='start-display.log', level=logging.INFO)
   logger.info('Started at:'+getDateTime(""))
+  counter = 0
   
   try:
     display = initDisplay()
@@ -110,20 +138,32 @@ if __name__ == '__main__':
       
       drawText(draw, (0,3), getDateTime(), fonts[18])
       
-      (first, second) = getIP6Address()
-      logger.info("ip6: "+ first + second)
+      (ip4_l, ip6_l, _) = getAllIPAdresses()
+      ip4_len = length(ip4)
+      ip6_len = length(ip6)
+      max = ip4_len * ip6_len
+      
+      ip4 = ip4_l[counter % ip4_len]
+      ip6 = ip6_l[counter % ip6_len]
+      first = ":".join(ip6[0:4]) + ":"
+      second = ":".join(ip6[4:8])
+
+      logger.info("ip6: "+ ip6)
       
       drawText(draw, (0, 30), "ip6:", fonts[25])
       drawText(draw, (50, 28), first, fonts[15])
       drawText(draw, (50, 46), second, fonts[15])
       
       ip4 = getIP4Address()
-      drawText(draw, (0,70), ip4, fonts[25])
-      logger.info(ip4)
+      drawText(draw, (0,70), "ip4:"+ ip4, fonts[25])
+      logger.info("ip4:"+ip4)
       
       pushImage(display, image)
       
       sleep(100)
+      counter += 1
+      counter %= max
+
     
   except IOError as e:
     logger.info('Finished with IOError')
