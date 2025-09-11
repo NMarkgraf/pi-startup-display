@@ -21,10 +21,6 @@ import logging
 # Logger einrichten
 logger = logging.getLogger(__name__)
 
-# Google DNS, Cloudflare DNS
-dns_ip4 = ["8.8.8.8", "1.1.1.2"]
-dns_ip6 = ["2001:4860:4860::8888", "2606:4700:4700::1111"]
-
 
 def getAllIPAdresses():
   interfaces = []
@@ -101,7 +97,7 @@ if __name__ == '__main__':
     
     pushImage(display, image)
     
-    sleep(10)
+    sleep(5)
 
     while True:
       image = initImage(display)
