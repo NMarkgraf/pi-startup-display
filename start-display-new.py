@@ -7,13 +7,13 @@
   Release 1.0 (10. August 2025)
   Release 1.1 (12. August 2025)
   Release 1.2 ( 9. September 2025)
+  Release 1.3 (11. September 2025)
 """
 
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 from time import sleep
 import socket
-import netifaces as ni
 import epd2in13_V4
 import logging
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     
     pushImage(display, image)
     
-    sleep(30)
+    sleep(10)
 
     while True:
       image = initImage(display)
@@ -139,8 +139,8 @@ if __name__ == '__main__':
       drawText(draw, (0,3), getDateTime(), fonts[18])
       
       (ip4_l, ip6_l, _) = getAllIPAdresses()
-      ip4_len = length(ip4)
-      ip6_len = length(ip6)
+      ip4_len = len(ip4)
+      ip6_len = len(ip6)
       max = ip4_len * ip6_len
       
       ip4 = ip4_l[counter % ip4_len]
