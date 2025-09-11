@@ -139,8 +139,8 @@ if __name__ == '__main__':
       drawText(draw, (0,3), getDateTime(), fonts[18])
       
       (ip4_l, ip6_l, _) = getAllIPAdresses()
-      ip4_len = len(ip4)
-      ip6_len = len(ip6)
+      ip4_len = len(ip4_l)
+      ip6_len = len(ip6_l)
       max = ip4_len * ip6_len
       
       ip4 = ip4_l[counter % ip4_len]
