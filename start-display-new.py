@@ -13,6 +13,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 from time import sleep
+import psutil
 import socket
 import epd2in13_V4
 import logging
@@ -30,8 +31,6 @@ def getAllIPAdresses():
   ip_list = []
   ip4_set = set()
   ip6_set = set()
-  import psutil
-  import socket
   for interface in psutil.net_if_addrs():
     if interface != "lo":
       interfaces += interface,
