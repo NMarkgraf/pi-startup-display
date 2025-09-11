@@ -154,7 +154,7 @@ if __name__ == '__main__':
       drawText(draw, (50, 28), first, fonts[15])
       drawText(draw, (50, 46), second, fonts[15])
       
-      ip4 = getIP4Address()
+      # ip4 = getIP4Address()
       drawText(draw, (0,70), "ip4:"+ ip4, fonts[25])
       logger.info("ip4:"+ip4)
       
