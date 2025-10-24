@@ -3,81 +3,161 @@
   
   (C) by Norman Markgraf
       in 2025
-  
+      
   Release 1.0 (10. August 2025)
   Release 1.1 (12. August 2025)
-  
+  Release 1.2 ( 9. September 2025)
+  Release 1.3 (11. September 2025)
+  Release 1.4 (24. Oktober 2025)
 """
 
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 from time import sleep
+import psutil
 import socket
 import epd2in13_V4
+import logging
 
-# Google DNS
-dns_ip4 = "8.8.8.8"
-dns_ip6 = "2001:4860:4860::8888"
+# Logger einrichten
+logger = logging.getLogger(__name__)
 
-# Cloudflare DNS
-# dns_ip4 = "1.1.1.2"
-# dns_ip6 = "2606:4700:4700::1111"
-
-
-def getIP4Address(prefix = "ip4: "):
-  s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  s.connect((dns_ip4, 1))
-  ip4 = s.getsockname()[0]
-  s.close()
-  return prefix + ip4
+# Google DNS, Cloudflare DNS
+dns_ip4 = ["8.8.8.8", "1.1.1.2"]
+dns_ip6 = ["2001:4860:4860::8888", "2606:4700:4700::1111"]
 
 
-def getIP6Address(prefix = ""):
-  s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-  s.connect((dns_ip6, 1))
-  ip6 =s.getsockname()[0].split(":")
-  s.close()
-  first = ":".join(ip6[0:4]) + ":"
-  second = ":".join(ip6[4:8])
-  return (prefix + first, second)
+def getAllIPAdresses():
+  interfaces = []
+  ip_list = []
+  ip4_set = set()
+  ip6_set = set()
+  for interface in psutil.net_if_addrs():
+    if interface == "lo":
+      continue
+    interface_addrs = psutil.net_if_addrs().get(interface)
+    for snicaddr in interface_addrs:
+        if snicaddr.family in(socket.AF_INET, socket.AF_INET6):
+            if "%" not in snicaddr.address:
+              ip_list += snicaddr.address,
+    for ip in ip_list:
+      if ":" in ip:
+        ip6_set.add(ip)
+      if "." in ip:
+        ip4_set.add(ip)
+  logger.debug(ip_list)
+  logger.debug(list(ip4_set))
+  logger.debug(list(ip6_set))
+  return (list(ip4_set), list(ip6_set), ip_list)
 
 
 def getDateTime(prefix = "Start: "):
-  return prefix + str(datetime.now())[:19]
+    return prefix + str(datetime.now())[:19]
 
 
-try:
-	epd = epd2in13_V4.EPD()
-	epd.init()
-#	epd.Clear(0xFF)
-	
-#	font10 = ImageFont.truetype('Font.ttc', 10)
-#	font13 = ImageFont.truetype('Font.ttc', 13)
-	font15 = ImageFont.truetype('Font.ttc', 15)
-	font18 = ImageFont.truetype('Font.ttc', 18)
-#	font20 = ImageFont.truetype('Font.ttc', 20)
-	font25 = ImageFont.truetype('Font.ttc', 25)
-	
-	image = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame    
-	
-	draw = ImageDraw.Draw(image)
-	draw.text((0, 3), getDateTime(), font = font18, fill = 0)
+def initDisplay():
+  epd = epd2in13_V4.EPD()
+  epd.init()
+  epd.Clear(0xFF)
+  return epd
 
-	(first, second) = getIP6Address()
-	
-	draw.text((0, 30), "ip6:", font = font25, fill = 0)
-	draw.text((50, 28), first, font = font15, fill = 0)
-	draw.text((50, 46), second, font = font15, fill = 0)
 
-	draw.text((0, 70), getIP4Address(), font = font25, fill = 0)
+def initFonts(lst = [15, 18, 25]):
+  fonts = dict()
+  for size in lst:
+    fonts[size] = ImageFont.truetype('Font.ttc', size)
+  return fonts
 
-	epd.display(epd.getbuffer(image))
-	sleep(10)
+
+def initImage(dsp):
+  return Image.new("1", (dsp.height, dsp.width), 255)
+
+
+def initDraw(image):
+  return ImageDraw.Draw(image)
+
+
+def drawText(draw, pos, text, font=None, fill=0):
+  if font:
+    draw.text(pos, text, font=font, fill=fill)
+
+
+def pushImage(dsp, image):
+  dsp.display(dsp.getbuffer(image))
+
+
+if __name__ == '__main__':
+  logging.basicConfig(filename='start-display.log', level=logging.INFO)
+  logger.info('Started at:'+getDateTime(""))
+  counter = 0
   
-  
-except IOError as e:
-	exit(0)
- 
-except KeyboardInterrupt:    
-	epd2in13_V4.epdconfig.module_exit(cleanup=True)
-	exit(0)
+  try:
+    display = initDisplay()
+    image = initImage(display)
+    fonts = initFonts()
+    draw = initDraw(image)
+    
+    drawText(draw, (0,3), getDateTime(), fonts[18])
+
+    logger.info('Scanning ...')
+    drawText(draw, (20, 30 ), "Scanning ...", fonts[25])
+    
+    pushImage(display, image)
+    
+    sleep(10)
+    logger.info('End sleeping!')
+
+    while True:
+      image = initImage(display)
+      draw = initDraw(image)
+      logger.debug('draw and image initialised!')
+      
+      drawText(draw, (0,3), getDateTime(), fonts[18])
+      
+      (ip4_l, ip6_l, x) = getAllIPAdresses()
+      logger.debug("Get All IP Adresses")
+
+      ip4_len = len(ip4_l)
+      ip6_len = len(ip6_l)
+      #max = ip4_len * ip6_len
+      if ip4_len == 0:
+        ip4_l = ["0.0.0.0"]
+        ip4_len = 1
+      if ip6_len == 0:
+        ip6_l = ["0:0:0:0:0:0:0:0"]
+        ip6_len = 1
+      max = ip4_len * ip6_len
+      
+      ip4 = ip4_l[counter % ip4_len]
+      ip6 = ip6_l[counter % ip6_len].split(":")
+      first = ":".join(ip6[0:4]) + ":"
+      second = ":".join(ip6[4:8])
+
+      logger.info("ip6: "+ first + second)
+      
+      drawText(draw, (0, 30), "ip6:", fonts[25])
+      drawText(draw, (50, 28), first, fonts[15])
+      drawText(draw, (50, 46), second, fonts[15])
+      
+      drawText(draw, (0,70), "ip4:"+ ip4, fonts[25])
+      logger.info("ip4: "+ip4)
+      
+      pushImage(display, image)
+      
+      logger.debug("Sleeping....")
+      sleep(100)
+      counter += 1
+      counter %= max
+      logger.debug("End sleeping!")
+
+    
+  except IOError as e:
+    logger.error('Finished with IOError')
+    exit(0)
+   
+  except KeyboardInterrupt: 
+    logger.error('Finished with KeyboardInterrupt')
+    epd2in13_V4.epdconfig.module_exit(cleanup=True)
+    exit(0)
+      
+  logger.info('Finished')
